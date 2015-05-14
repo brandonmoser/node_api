@@ -1,6 +1,6 @@
 # Node.JS API Case Study
 
-A Simple Node.JS API that interfaces with Target
+A Simple Node.JS API for myRetail
 
 ## Description of Spec
 
