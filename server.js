@@ -42,36 +42,30 @@ server.get('/', function (req, res, next) {
 server.get('/products/:id', function get_product(req, res, next) {
   var product_response = {};
   var product_id = req.params.id;
-      console.log('Product Id', product_id);
+      console.log('Product Id Requested:', product_id);
 
   var product_data = lib.callProductsAPI(product_id, function(err, api_data) {
     if (err){
       return next(err);
     }
-    console.log('api_data', api_data);
+    // console.log('api_data', api_data);
 
     // Use .lean() since we are not going to update it
-    ProductModel.findOne().lean().exec(function(err, product){
+    ProductModel.findOne({product_id: product_id}).lean().exec(function(err, product){
       if (err) {
         return next(err);
       }
-      console.log('m product', product);
+      // console.log('m product', product);
 
-//    {
-//        "id": 13860428,
-//        "name": "The Big Lebowski (Blu-ray) (Widescreen)",
-//        "current_price": {
-//            "currency_code": "USD",
-//            "value": 13.49
-//        }
-//    }
       product_response.id = product_id;
-      product_response.name = api_data.online_description.value;
+      product_response.name = api_data.online_description ? api_data.online_description.value : '';
       if (product){
         product_response.current_price = {
           "currency_code": product.current_price.currency_code,
           "value": product.current_price.value
         };
+      } else {
+        product_response.current_price = {}
       }
 
       console.log('product_response', product_response);
