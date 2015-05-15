@@ -3,13 +3,12 @@ var restify = require('restify');
 var async = require('async');
 var mongoose = require('mongoose');
 var lib = require('./lib');
-var request = require('request');
+var db = require('./lib/Db');
 
 var Product = require('./models/Product');
 var ProductModel = mongoose.model('Product');
 
 var PORT = process.env.PORT || 3000;
-var API_KEY = process.env.API_KEY;
 
 var server = restify.createServer();
 
@@ -41,28 +40,42 @@ server.get('/', function (req, res, next) {
 });
 
 server.get('/products/:id', function get_product(req, res, next) {
+  var product_response = {};
   var product_id = req.params.id;
-  var get_data = '';
-  var url = 'https://api.target.com/products/v3/'+product_id+'?fields=descriptions&id_type=TCIN&key='+API_KEY;
-  console.log('url', url);
-  request(url, function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-      get_data = body
-    }
-    get_data = JSON.parse(get_data);
-    console.log('get_data', get_data.product_composite_response.items);
-
-    var res_obj = {};
-    res_obj.id =
-    ProductModel.find({product_id: product_id}, function(err, product){
-      console.log('found mongo')
-      if (err) {
-        res.statusCode = 500;
-        res.send(err);
-        res.end();
-      }
       console.log('Product Id', product_id);
-      res.send('Product Id ' + product_id);
+
+  var product_data = lib.callProductsAPI(product_id, function(err, api_data) {
+    if (err){
+      return next(err);
+    }
+    console.log('api_data', api_data);
+
+    // Use .lean() since we are not going to update it
+    ProductModel.findOne().lean().exec(function(err, product){
+      if (err) {
+        return next(err);
+      }
+      console.log('m product', product);
+
+//    {
+//        "id": 13860428,
+//        "name": "The Big Lebowski (Blu-ray) (Widescreen)",
+//        "current_price": {
+//            "currency_code": "USD",
+//            "value": 13.49
+//        }
+//    }
+      product_response.id = product_id;
+      product_response.name = api_data.online_description.value;
+      if (product){
+        product_response.current_price = {
+          "currency_code": product.current_price.currency_code,
+          "value": product.current_price.value
+        };
+      }
+
+      console.log('product_response', product_response);
+      res.json(product_response);
       res.end();
     });
   });

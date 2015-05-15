@@ -4,6 +4,7 @@
   "description": "A simple Node.JS API to interface with Target",
   "main": "server.js",
   "scripts": {
+    "start": "API_KEY=43cJWpLjH8Z8oR18KdrZDBKAgLLQKJjz node-supervisor server.js",
     "seeds": "node seeds/seeder.js",
     "test": "mocha --reporter list"
   },
@@ -27,6 +28,7 @@
     "bunyan": "^1.3.5",
     "mongoose": "^4.0.3",
     "request": "^2.55.0",
-    "restify": "^3.0.2"
+    "restify": "^3.0.2",
+    "supervisor": "^0.6.0"
   }
 }
