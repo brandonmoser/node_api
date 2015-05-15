@@ -1,0 +1,17 @@
+mongoServer:
+  image: mongo:2.6
+  ports:
+    - "27017:27017"
+
+api:
+  build: .
+  command: npm start
+  ports:
+    - "3000:3000"
+  links:
+    - mongoServer
+  volumes:
+    - .:/api
+  environment:
+    - NODE_ENV=development
+    - API_KEY=43cJWpLjH8Z8oR18KdrZDBKAgLLQKJjz
