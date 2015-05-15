@@ -23,3 +23,31 @@ Build an application that performs the following actions:
 * Contains a README.md file with instructions for testing, running and interacting with your application.
 * BONUS: Accepts an HTTP request to update the product's price in the data store. Hint: Ideally, it should respond to a different HTTP method at the same path ```/products/{id}```.
 * BONUS: Contains a build script (pom.xml, build.gradle, package.json, etc) that can be used to build, run or package the application.
+
+## Building/Installing Project
+
+1) Clone the project locally
+```sh
+$ git clone https://github.com/brandonmoser/node_api.git && cd node_api
+```
+2) Then install the npm packages
+```sh
+$ npm install
+```
+
+## Running Tests
+
+The tests are built with Mocha & Chai
+
+```sh
+$ npm test
+```
+
+## Running the Server
+
+Before running the server, make sure you have a MongoDB running locally on port 27017.
+
+Running the server
+```sh
+$ npm start
+```
