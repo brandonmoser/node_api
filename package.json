@@ -4,6 +4,7 @@
   "description": "A simple Node.JS API to interface with Target",
   "main": "server.js",
   "scripts": {
+    "seeds": "node seeds/seeder.js",
     "test": "mocha --reporter list"
   },
   "repository": {
